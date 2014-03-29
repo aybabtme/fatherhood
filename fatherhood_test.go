@@ -80,11 +80,14 @@ func TestParseSmallJSON(t *testing.T) {
 				if t != fatherhood.String {
 					return fmt.Errorf("unexpected type, %d", t)
 				}
-				var ref *string
-				if err := dec.ReadString(ref); err != nil {
+				// can't pass pointer to naked string, need the string to be in a struct
+				var ref struct {
+					val string
+				}
+				if err := dec.ReadString(&ref.val); err != nil {
 					return fmt.Errorf("reading reference string, %v", err)
 				}
-				got.References = append(got.References, *ref)
+				got.References = append(got.References, ref.val)
 				return nil
 			})
 		case "flags":

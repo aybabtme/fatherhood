@@ -110,7 +110,7 @@ func (d *Decoder) EachValue(doFunc func(JSONType) error) error {
 	}
 }
 
-// JSONType that can be received by
+// JSONType that can be received by EachValue funcs.
 type JSONType uint8
 
 const (
