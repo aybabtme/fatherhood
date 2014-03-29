@@ -27,7 +27,7 @@ func (d *Decoder) ReadMap(target *map[string]interface{}) error { return d.scan.
 
 // EachMember iterates over the members of an object. Invoke the proper Read
 // function to get the value back.
-func (d *Decoder) EachMember(doFunc func(string) error) error {
+func (d *Decoder) EachMember(dst interface{}, doFunc func(*Decoder, interface{}, string) error) error {
 
 	if tok, tokval, err := d.scan.Scan(); err != nil {
 		return err
@@ -68,7 +68,7 @@ func (d *Decoder) EachMember(doFunc func(string) error) error {
 			return fmt.Errorf("unexpected %s at %d: %s; expected colon", scanner.TokenName(tok), d.scan.Pos(), string(tokval))
 		}
 
-		if err := doFunc(key); err != nil {
+		if err := doFunc(d, dst, key); err != nil {
 			return err
 		}
 		index++
@@ -78,7 +78,7 @@ func (d *Decoder) EachMember(doFunc func(string) error) error {
 // EachValue iterates over and invokes doFunc at each value of an array. Invoke
 // the proper Read function to get the value. The type of the value to read is
 // specified by the JSONType given as argument.
-func (d *Decoder) EachValue(doFunc func(JSONType) error) error {
+func (d *Decoder) EachValue(dst interface{}, doFunc func(*Decoder, interface{}, JSONType) error) error {
 	if tok, _, err := d.scan.Scan(); err != nil {
 		return err
 	} else if tok != scanner.TLBRACKET {
@@ -103,7 +103,7 @@ func (d *Decoder) EachValue(doFunc func(JSONType) error) error {
 		}
 		d.scan.Unscan(tok, tokval)
 
-		if err := doFunc(toJSONType(tok)); err != nil {
+		if err := doFunc(d, dst, toJSONType(tok)); err != nil {
 			return err
 		}
 		index++

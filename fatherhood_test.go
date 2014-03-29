@@ -63,20 +63,21 @@ func TestParseSmallJSON(t *testing.T) {
 	bf := bytes.NewBufferString(smallJSON)
 
 	var got object
-	dec := fatherhood.NewDecoder(bf)
 
-	err := dec.EachMember(func(member string) error {
+	err := fatherhood.NewDecoder(bf).EachMember(&got, func(dec *fatherhood.Decoder, dst interface{}, member string) error {
+		obj := dst.(*object)
 		switch member {
 		case "class":
-			return dec.ReadString(&got.Class)
+			return dec.ReadString(&obj.Class)
 		case "line":
-			return dec.ReadUint64(&got.Line)
+			return dec.ReadUint64(&obj.Line)
 		case "fd":
-			return dec.ReadInt(&got.Fd)
+			return dec.ReadInt(&obj.Fd)
 		case "shared":
-			return dec.ReadBool(&got.Shared)
+			return dec.ReadBool(&obj.Shared)
 		case "references":
-			return dec.EachValue(func(t fatherhood.JSONType) error {
+			return dec.EachValue(&obj.References, func(dec *fatherhood.Decoder, dst interface{}, t fatherhood.JSONType) error {
+				arr := dst.(*[]string)
 				if t != fatherhood.String {
 					return fmt.Errorf("unexpected type, %d", t)
 				}
@@ -87,18 +88,19 @@ func TestParseSmallJSON(t *testing.T) {
 				if err := dec.ReadString(&ref.val); err != nil {
 					return fmt.Errorf("reading reference string, %v", err)
 				}
-				got.References = append(got.References, ref.val)
+				*arr = append(*arr, ref.val)
 				return nil
 			})
 		case "flags":
-			return dec.EachMember(func(flagmember string) error {
+			return dec.EachMember(&obj.Flags, func(dec *fatherhood.Decoder, dst interface{}, flagmember string) error {
+				innerObj := dst.(*flag)
 				switch flagmember {
 				case "wbprotected":
-					return dec.ReadBool(&got.Flags.WbProtected)
+					return dec.ReadBool(&innerObj.WbProtected)
 				case "old":
-					return dec.ReadInt(&got.Flags.Old)
+					return dec.ReadInt(&innerObj.Old)
 				case "marked":
-					return dec.ReadString(&got.Flags.Marked)
+					return dec.ReadString(&innerObj.Marked)
 				}
 				return nil
 			})
