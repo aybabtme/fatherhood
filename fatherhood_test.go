@@ -27,7 +27,22 @@ type flag struct {
 	Marked      string
 }
 
-const smallJSON = ` {"class": "array", "references": ["hello", "bye", "lollll"], "line": 1662, "fd": -1, "shared": true, "flags": {"wbprotected": false, "old": -765, "marked": "probably"} } `
+const smallJSON = `{
+    "class": "array",
+    "line": 1662,
+    "fd": -1,
+    "shared": true,
+    "flags": {
+        "wbprotected": false,
+        "old": -765,
+        "marked": "probably"
+    },
+    "references": [
+        "hello",
+        "bye",
+        "lollll"
+    ]
+}`
 
 var want = object{
 	Class:      "array",
@@ -67,7 +82,7 @@ func TestParseSmallJSON(t *testing.T) {
 				}
 				var ref *string
 				if err := dec.ReadString(ref); err != nil {
-					return err
+					return fmt.Errorf("reading reference string, %v", err)
 				}
 				got.References = append(got.References, *ref)
 				return nil

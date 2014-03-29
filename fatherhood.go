@@ -102,6 +102,7 @@ func (d *Decoder) EachValue(doFunc func(JSONType) error) error {
 			}
 		}
 		d.scan.Unscan(tok, tokval)
+
 		if err := doFunc(toJSONType(tok)); err != nil {
 			return err
 		}
