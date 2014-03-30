@@ -2,14 +2,14 @@ fatherhood
 ==========
 [![Build Status](https://drone.io/github.com/aybabtme/fatherhood/status.png)](https://drone.io/github.com/aybabtme/fatherhood/latest)
 
-fatherhood is a JSON stream decoding library wrapping the scanner of
-[`megajson`](https://github.com/benbjohnson/megajson).
+`fatherhood` is a JSON stream decoding library wrapping the
+[`megajson`](https://github.com/benbjohnson/megajson) scanner.
 
 It offers a very ugly API in exchange for speed and no code generation.
 
 ## Performance
 
-Speed is equivalent to [`megajson`](https://github.com/benbjohnson/megajson),
+Its speed is equivalent to [`megajson`](https://github.com/benbjohnson/megajson),
 since it uses the same scanner.  All kudos to [Ben Johnson](https://github.com/
 benbjohnson), not me.
 
@@ -24,59 +24,55 @@ benbjohnson), not me.
 
 [Godoc](http://godoc.org/github.com/aybabtme/fatherhood)!
 
-## Why use this?
+## Why use this...
 
-> and not megajson?
+### Instead of `megajson`?
 
-megajson uses code generation to create decoders/encoders for your types.
-fatherhood doesn't.
+`megajson` uses code generation to create decoders/encoders for your types,
+`fatherhood` doesn't.
 
-Some combinations of types aren't working in megajson. They work with
-fatherhood. For instance, I wrote fatherhood because megajson didn't
+Some combinations of types aren't working in megajson but they work with
+`fatherhood`. For instance, I wrote `fatherhood` because `megajson` didn't
 decode objects containing `[]uint64`.
 
-> and not encoding/json?
+### Instead of `encoding/json`?
 
-The standard library decoder is slower than fatherhood.
+`fatherhood` is faster than the standard library decoder.
 
-## Why use megajson?
+## Why use `megajson` instead of `fatherhood`?
 
-> and not this?
+`megajson` offers an encoder, while `fatherhood` only decodes.
 
-megajson offers an encoder, fatherhood only decodes.
-
-Aside for the code generation thing, megajson gives you drop in codecs.
-Meanwhile, fatherhood's API is fugly and a pain to use.
+Regarding code generation, `megajson` gives you drop in codecs.
+Meanwhile, the `fatherhood` API is ugly and painful to use.
 
 
-## Why use encoding/json?
+## Why use `encoding/json` instead of `fatherhood`?
 
-> and not this?
-
-The standard library offers a much nicer API, and you should always prefer it
-to this package unless JSON decoding speed becomes a problem.
+The standard library offers a much nicer API. You should always prefer
+`encoding/json` to `fatherhood` unless JSON decoding speed becomes a problem.
 
 ## Usage
 
-The general idea of fatherhood goes like this:
+The general idea of `fatherhood` goes like this:
 
 * get a decoder.
 * iterate over the values you need.
 * extract them manually.
 
-Get a decoder:
+Getting a decoder:
 ```go
 dec := fatherhood.NewDecoder(r)
 ```
 
 Then you should know what's in the stream you are reading:
-```
+```go
 err := dec.EachMember(&obj, objVisitor) // decodes objects
 err := dec.EachValue(&arr, arrVisitor)  // decodes arrays
-err := dec.ReadTypeX(&typeX)     // decodes strings, bool, floats, ints, etc
+err := dec.ReadTypeX(&typeX)            // decodes strings, bool, floats, ints, etc
 ```
 
-When you decode an object, you must provide a visitor func that will be invoked at member of the object:
+When you decode an object, you must provide a visitor `func` that will be invoked for each member of the object:
 
 ```go
 obj := &objType{} // make sure obj is not a nil pointer!
@@ -92,7 +88,7 @@ func objVisitor(dec *Decoder, o interface{}, member string) error {
 }
 ```
 
-Similarly, when you decode an array, you must provide a visitor func that will be invoked at each value of the array:
+Similarly, when you decode an array, you must provide a visitor `func` that will be invoked for each element in the array:
 
 ```go
 arr := make([]arrType, 0) // make sure arr is not nil!
@@ -115,9 +111,7 @@ your things carefully.__
 
 ## Example
 
-> ugly!
-
-Extracted from the benchmark code.  Be cautious, messed up code ahead:
+Extracted from the benchmark code. Be cautious, messed up code ahead:
 
 ```go
 type codeResponse struct {
@@ -199,21 +193,21 @@ func Unmarshal(data []byte, code *codeResponse) error {
 
 Performance values taken from running benchmarks on the following revisions:
 
-* megajson, on `master`:
+* `megajson`, on `master`:
 
 ```
 benbjohnson/megajson $ git rev-parse HEAD
 533c329f8535e121708a0ee08ea53bda5edfbe79
 ```
 
-* fatherhood, on `master`:
+* `fatherhood`, on `master`:
 
 ```
 aybabtme/fatherhood $ git rev-parse HEAD
 5cfd87c089e3829a28c9cfcd8993370bf787ffa1
 ```
 
-* encoding/json, on `release-branch.go1.2`:
+* `encoding/json`, on `release-branch.go1.2`:
 
 ```
 encoding/json $ hg summary
