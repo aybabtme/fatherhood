@@ -44,8 +44,8 @@ func (d *Decoder) Discard() error {
 	return err
 }
 
-// Disclaimer: The code that follows is almost vertbatim copy/paste from
-// codegenerated megajson decoder.
+// Disclaimer: The code that follows is almost verbatim copy/pasted from a
+// codegenerated megajson decoder: https://github.com/benbjohnson/megajson/blob/master/.bench/code_decoder.go#L22:L132
 
 // EachMember iterates over the members of an object. Invoke the proper Read
 // function to get the value back.
