@@ -36,6 +36,17 @@ func (d *Decoder) ReadFloat64(target *float64) error            { return d.scan.
 func (d *Decoder) ReadBool(target *bool) error                  { return d.scan.ReadBool(target) }
 func (d *Decoder) ReadMap(target *map[string]interface{}) error { return d.scan.ReadMap(target) }
 
+// Discard will read the next token out of the reader. You should discard any
+// member in an object that you do not use, to avoid leaving the decoder in an
+// unexpected state in future calls.
+func (d *Decoder) Discard() error {
+	_, _, err := d.scan.Scan()
+	return err
+}
+
+// Disclaimer: The code that follows is almost vertbatim copy/paste from
+// codegenerated megajson decoder.
+
 // EachMember iterates over the members of an object. Invoke the proper Read
 // function to get the value back.
 func (d *Decoder) EachMember(dst interface{}, visitFunc func(*Decoder, interface{}, string) error) error {
@@ -76,11 +87,11 @@ func (d *Decoder) EachMember(dst interface{}, visitFunc func(*Decoder, interface
 		if tok, tokval, err := d.scan.Scan(); err != nil {
 			return err
 		} else if tok != scanner.TCOLON {
-			return fmt.Errorf("unexpected %s at %d: %s; expected colon", scanner.TokenName(tok), d.scan.Pos(), string(tokval))
+			return fmt.Errorf("unexpected %s at %d (member %s): %s; expected colon", scanner.TokenName(tok), d.scan.Pos(), key, string(tokval))
 		}
 
 		if err := visitFunc(d, dst, key); err != nil {
-			return err
+			return fmt.Errorf("visiting member %s, type %s, %v", key, scanner.TokenName(tok), err)
 		}
 		index++
 	}
@@ -115,7 +126,7 @@ func (d *Decoder) EachValue(dst interface{}, visitFunc func(*Decoder, interface{
 		d.scan.Unscan(tok, tokval)
 
 		if err := visitFunc(d, dst, toJSONType(tok)); err != nil {
-			return err
+			return fmt.Errorf("visiting index %d, type %s, %v", index, scanner.TokenName(tok), err)
 		}
 		index++
 	}

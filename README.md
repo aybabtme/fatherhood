@@ -85,6 +85,8 @@ func objVisitor(dec *Decoder, o interface{}, member string) error {
     return dec.ReadInt(obj.Key1)
     // and so on
   }
+  // You MUST discard members that you choose not to decode.
+  return dec.Discard()
 }
 ```
 
@@ -103,6 +105,8 @@ func arrVisitor(dec *fatherhood.Decoder, a interface{}, t fatherhood.JSONType) e
     *arr = append(*arr, obj)
     return err
   }
+  // You MUST discard values that you choose not to decode.
+  return dec.Discard()
 }
 ```
 
@@ -170,7 +174,9 @@ func Unmarshal(data []byte, code *codeResponse) error {
       node.Kids = make([]*codeNode, 0)
       return dec.EachValue(&node.Kids, decodeNodeArr)
     }
+    // or dec.Discard() to carry on
     return fmt.Errorf("unsupported member %s", member)
+
   }
 
   decodeNodeArr = func(dec *Decoder, a interface{}, t JSONType) error {
