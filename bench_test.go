@@ -47,7 +47,6 @@ func Unmarshal(data []byte, code *codeResponse) error {
 
 	read := bytes.NewReader(data)
 
-	// Decode a struct
 	var (
 		decodeNodeArr  func(*Decoder, interface{}, JSONType) error
 		decodeNode     func(*Decoder, interface{}, string) error
@@ -60,17 +59,14 @@ func Unmarshal(data []byte, code *codeResponse) error {
 		case "username":
 			return dec.ReadString(&resp.Username)
 		case "tree":
-			return dec.EachMember(&resp.Tree, decodeNode)
+			resp.Tree = &codeNode{}
+			return dec.EachMember(resp.Tree, decodeNode)
 		}
 		return fmt.Errorf("unsupported member %s", member)
 	}
 
 	decodeNode = func(dec *Decoder, n interface{}, member string) error {
-		ptr := n.(**codeNode)
-		if *ptr == nil {
-			*ptr = &codeNode{}
-		}
-		node := *ptr
+		node := n.(*codeNode)
 		switch member {
 		case "name":
 			return dec.ReadString(&node.Name)
@@ -95,8 +91,8 @@ func Unmarshal(data []byte, code *codeResponse) error {
 		arr := a.(*[]*codeNode)
 		switch t {
 		case Object:
-			var node *codeNode
-			err := dec.EachMember(&node, decodeNode)
+			node := &codeNode{}
+			err := dec.EachMember(node, decodeNode)
 			*arr = append(*arr, node)
 			return err
 		}
