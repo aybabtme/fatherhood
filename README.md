@@ -20,7 +20,7 @@ benbjohnson), not me.
 | encoding/json | 98'061'899 | 19.79 |
 
 
-## Docs
+## Godocs?
 
 [Godoc](http://godoc.org/github.com/aybabtme/fatherhood)!
 
