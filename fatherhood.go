@@ -1,3 +1,4 @@
+// Package fatherhood offers a fast JSON decoder with a terrible API.
 package fatherhood
 
 import (
@@ -7,10 +8,20 @@ import (
 	"io"
 )
 
+// Some docs shamelessly stolen from encoding/json
+
+// Decoder reads and decodes JSON objects from an input stream.
 type Decoder struct {
 	scan scanner.Scanner
 }
 
+// NewDecoder returns a new decoder that reads from r.
+//
+// Alike encoding/json, the decoder introduces its own buffering and may read
+// data from r beyond the JSON values requested.
+//
+// Unlike encoding/json, there's no Buffered method to retrieve the data
+// buffered. Sorry.
 func NewDecoder(r io.Reader) *Decoder {
 	return &Decoder{scan: scanner.NewScanner(r)}
 }
@@ -113,6 +124,7 @@ func (d *Decoder) EachValue(dst interface{}, doFunc func(*Decoder, interface{}, 
 // JSONType that can be received by EachValue funcs.
 type JSONType uint8
 
+// Types recognized by the decoder.
 const (
 	String = iota
 	Number
@@ -139,5 +151,6 @@ func toJSONType(token int) JSONType {
 	case scanner.TLBRACKET:
 		return Array
 	}
-	panic(fmt.Sprintf("unexpected token type, %s (%d)", scanner.TokenName(token), token))
+	panic(fmt.Sprintf("unexpected token type, %s (%d). This is likely a bug, please open an issue with the stacktrace at '%s'",
+		scanner.TokenName(token), token, "https://github.com/aybabtme/fatherhood/issues/new"))
 }
