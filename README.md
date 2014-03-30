@@ -31,8 +31,9 @@ benbjohnson), not me.
 megajson uses code generation to create decoders/encoders for your types.
 fatherhood doesn't.
 
-Some combinaisons of types aren't working in megajson. They work with
+Some combinations of types aren't working in megajson. They work with
 fatherhood. For instance, I wrote fatherhood because megajson didn't
+decode objects containing `[]uint64`.
 
 > and not encoding/json?
 
