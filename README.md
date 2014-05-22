@@ -24,34 +24,6 @@ benbjohnson), not me.
 
 [Godoc](http://godoc.org/github.com/aybabtme/fatherhood)!
 
-## Why use this...
-
-### Instead of `megajson`?
-
-`megajson` uses code generation to create decoders/encoders for your types,
-`fatherhood` doesn't.
-
-Some combinations of types aren't working in megajson but they work with
-`fatherhood`. For instance, I wrote `fatherhood` because `megajson` didn't
-decode objects containing `[]uint64`.
-
-### Instead of `encoding/json`?
-
-`fatherhood` is faster than the standard library decoder.
-
-## Why use `megajson` instead of `fatherhood`?
-
-`megajson` offers an encoder, while `fatherhood` only decodes.
-
-Regarding code generation, `megajson` gives you drop in codecs.
-Meanwhile, the `fatherhood` API is ugly and painful to use.
-
-
-## Why use `encoding/json` instead of `fatherhood`?
-
-The standard library offers a much nicer API. You should always prefer
-`encoding/json` to `fatherhood` unless JSON decoding speed becomes a problem.
-
 ## Usage
 
 The general idea of `fatherhood` goes like this:
@@ -221,3 +193,31 @@ parent: 18712:0ddbdc3c7ce2 go1.2.1 release
  go1.2.1
 branch: release-branch.go1.2
 ```
+
+## Why use this...
+
+### Instead of `megajson`?
+
+`megajson` uses code generation to create decoders/encoders for your types,
+`fatherhood` doesn't.
+
+Some combinations of types aren't working in megajson but they work with
+`fatherhood`. For instance, I wrote `fatherhood` because `megajson` didn't
+decode objects containing `[]uint64`.
+
+### Instead of `encoding/json`?
+
+`fatherhood` is faster than the standard library decoder.
+
+## Why use `megajson` instead of `fatherhood`?
+
+`megajson` offers an encoder, while `fatherhood` only decodes.
+
+Regarding code generation, `megajson` gives you drop in codecs.
+Meanwhile, the `fatherhood` API is ugly and painful to use.
+
+
+## Why use `encoding/json` instead of `fatherhood`?
+
+The standard library offers a much nicer API. You should always prefer
+`encoding/json` to `fatherhood` unless JSON decoding speed becomes a problem.
