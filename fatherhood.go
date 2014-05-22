@@ -4,8 +4,7 @@ package fatherhood
 import (
 	"errors"
 	"fmt"
-	// "github.com/benbjohnson/megajson/scanner"
-	"github.com/aybabtme/megajson/scanner" // until long-strings can be used
+	"github.com/benbjohnson/megajson/scanner"
 	"io"
 )
 
