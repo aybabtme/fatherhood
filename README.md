@@ -10,8 +10,7 @@ It offers a very ugly API in exchange for speed and no code generation.
 ## Performance
 
 Its speed is equivalent to [`megajson`](https://github.com/benbjohnson/megajson),
-since it uses the same scanner.  All kudos to [Ben Johnson](https://github.com/
-benbjohnson), not me.
+since it uses the same scanner.  All kudos to [Ben Johnson](https://github.com/benbjohnson), not me.
 
 |    package    |      ns/op |  MB/s |
 |:-------------:|:----------:|:-----:|
